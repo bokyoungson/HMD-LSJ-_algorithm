@@ -1,5 +1,5 @@
 // passed visible test set
-//non-passed hidden test set : Time Limit Exceeded
+//passed hidden test set : Time Limit Exceeded
 
 #include<iostream>
 #include<algorithm>
@@ -7,45 +7,58 @@
 using namespace std;
 
 int *value;
+int *subarr;
 
-int check(int val[],int N,int P) {
+int check(int val[], int N, int P) {
 
-  int i,j;
-  int sum = 0;
-  int cp=987654321;
+	int i, j;
+	int cp = 987654321;
+	int sum = 0;
+	int count = 0;
 
-  sort(val, val + N);
+	subarr = new int[N - P + 1];
 
-  for (i = 0; i < N - P + 1; i++) {
-     for (j = i; j < i + P; j++)
-        sum += val[i + P - 1] - val[j];
-     if (sum < cp)
-        cp = sum;
-     sum = 0;
-  }
-  return cp;
+	sort(val, val + N);
+
+	for (i = 0; i < P - 1; i++)
+		sum += val[i];
+
+	for (i = P - 1; i < N; i++) {
+		sum += val[i];
+		subarr[i-P+1] = sum;
+		sum -= val[i - P + 1];
+	}
+
+	for (i = P - 1; i < N; i++) {
+		count = P*val[i] - subarr[i - P + 1];
+
+		if (count < cp)
+			cp = count;
+	}
+	return cp;
 }
 
-int main(){
+int main() {
 
-  int i, j, k, T;
+	int i, j, k, T;
 
-  cin >> T;
+	cin >> T;
 
-  for (i = 0; i < T; i++) {
+	for (i = 0; i < T; i++) {
 
-     int N, P;
+		int N, P;
 
-     cin >> N >> P;
+		cin >> N >> P;
 
-     value = new int[N];
-     
-     for (j = 0; j < N; j++)
-              cin >> value[j];
+		value = new int[N];
 
-     k=check(value,N,P);
-     
-     cout << "Case #" << i + 1 << ": " << k << endl;
-  }
-  return 0;
+		for (j = 0; j < N; j++) {
+			cin >> value[j];
+		}
+
+		k = check(value, N, P);
+
+		cout << "Case #" << i + 1 << ": " << k << endl;
+	}
+	return 0;
 }
